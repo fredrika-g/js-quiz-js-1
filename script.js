@@ -2,42 +2,42 @@ const questions = [
   {
     q: "This is either true or false",
     a: [
-      { text: "Sant", value: "sant", isCorrect: true },
-      { text: "Falskt", value: "falskt", isCorrect: false },
+      { text: "Sant", value: "Sant", isCorrect: true },
+      { text: "Falskt", value: "Falskt", isCorrect: false },
     ],
     type: "trueOrFalse",
   },
   {
     q: "Second true/false question",
     a: [
-      { text: "Sant", value: "sant", isCorrect: true },
-      { text: "Falskt", value: "falskt", isCorrect: false },
+      { text: "Sant", value: "Sant", isCorrect: true },
+      { text: "Falskt", value: "Falskt", isCorrect: false },
     ],
     type: "trueOrFalse",
   },
   {
     q: "Third true/false question",
     a: [
-      { text: "Sant", value: "sant", isCorrect: false },
-      { text: "Falskt", value: "falskt", isCorrect: true },
+      { text: "Sant", value: "Sant", isCorrect: false },
+      { text: "Falskt", value: "Falskt", isCorrect: true },
     ],
     type: "trueOrFalse",
   },
   {
     q: "Fourth true/false question",
     a: [
-      { text: "Sant", value: "sant", isCorrect: true },
-      { text: "Falskt", value: "falskt", isCorrect: false },
+      { text: "Sant", value: "Sant", isCorrect: true },
+      { text: "Falskt", value: "Falskt", isCorrect: false },
     ],
     type: "trueOrFalse",
   },
   {
     q: "Vad heter jag?",
     a: [
-      { text: "Sara", value: "sara", isCorrect: false },
-      { text: "Fredrika", value: "fredrika", isCorrect: true },
-      { text: "Märta", value: "märta", isCorrect: false },
-      { text: "Gabriella", value: "gabriella", isCorrect: false },
+      { text: "Sara", value: "Sara", isCorrect: false },
+      { text: "Fredrika", value: "Fredrika", isCorrect: true },
+      { text: "Märta", value: "Märta", isCorrect: false },
+      { text: "Gabriella", value: "Gabriella", isCorrect: false },
     ],
     type: "multipleChoice",
   },
@@ -64,10 +64,10 @@ const questions = [
   {
     q: "Vad heter jag i mellannamn? Två rätta svar",
     a: [
-      { text: "Elisabeth", value: "elisabeth", isCorrect: false },
-      { text: "Helena", value: "helena", isCorrect: true },
-      { text: "Kristina", value: "kristina", isCorrect: true },
-      { text: "Ingrid", value: "ingrid", isCorrect: false },
+      { text: "Elisabeth", value: "Elisabeth", isCorrect: false },
+      { text: "Helena", value: "Helena", isCorrect: true },
+      { text: "Kristina", value: "Kristina", isCorrect: true },
+      { text: "Ingrid", value: "Ingrid", isCorrect: false },
     ],
     type: "checkbox",
   },
@@ -119,12 +119,11 @@ const submitQuiz = () => {
   warningMsg.innerHTML = "";
   if (allAnswered()) {
     console.log(checkAnswers());
+    showResults(checkAnswers());
   } else {
     warningMsg.innerText = "Du måste svara på alla frågor!";
   }
 };
-
-// check answers + show results
 
 const constructQuiz = () => {
   questions.forEach((question, index) => {
@@ -216,12 +215,8 @@ const allAnswered = () => {
 const checkAnswers = () => {
   let score = 0;
   let compiledAnswers = [];
-  let isCorrect = false;
-  let allChecked = [];
-  let answers = [];
 
   let inputElements = document.querySelectorAll("#quizContent input");
-
   questions.forEach((question) => {
     let inputs = [...inputElements].filter((input) => {
       if (questionMatchesAnswer(input, question)) {
@@ -233,15 +228,18 @@ const checkAnswers = () => {
       return a.isCorrect;
     });
 
+    let isCorrect = false;
+    let allChecked = [];
+    let answers = [];
+
     if (inputs.length === everyCorrect.length) {
       for (i = 0; i < inputs.length; i++) {
         if (inputs[i].value === everyCorrect[i].value) {
           isCorrect = true;
           answers.push(everyCorrect[i].text);
         }
-        allChecked.push(everyCorrect[i].text);
+        allChecked.push(inputs[i].value);
       }
-
       if (isCorrect && answers.length === everyCorrect.length) {
         score++;
         compiledAnswers.push({ answer: answers, isCorrect: true });
@@ -275,4 +273,44 @@ const questionMatchesAnswer = (input, question) => {
     +input.parentElement.parentElement.dataset.id ===
     questions.indexOf(question)
   );
+};
+
+const showResults = (resultObj) => {
+  let resultDiv = document.querySelector("#resultContent");
+  resultDiv.innerHTML = "";
+
+  resultObj.answers.forEach((result, index) => {
+    let div = document.createElement("div");
+    div.classList.add("result");
+    let question = questions[index].q;
+    let h3 = document.createElement("h3");
+    h3.innerText = `${index + 1}. ${question}`;
+    let answerDiv = document.createElement("div");
+    let h4 = document.createElement("h4");
+    let h5 = document.createElement("h5");
+    h5.innerText = "Du svarade:";
+    let ul = document.createElement("ul");
+    if (result.isCorrect) {
+      h4.innerText = "Rätt svar";
+      h4.classList.add("correctAnswer");
+    } else {
+      h4.innerText = "Fel svar";
+      h4.classList.add("wrongAnswer");
+    }
+
+    if (typeof result.answer === "array") {
+      result.answer.forEach((answer) => {
+        let li = document.createElement("li");
+        li.innerText = answer;
+        ul.append(li);
+      });
+    } else {
+      let li = document.createElement("li");
+      li.innerText = result.answer;
+      ul.append(li);
+    }
+
+    answerDiv.append(h4, h5, ul);
+    resultDiv.append(h3, answerDiv);
+  });
 };

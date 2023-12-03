@@ -105,7 +105,8 @@ toggleBtn.addEventListener("click", () => {
 });
 
 //start quiz
-let quizContent = document.querySelector("#quizContent");
+let content = document.querySelector("#content");
+let resultDiv = document.querySelector("#resultContent");
 let warningMsg = document.querySelector(".warning");
 
 document.querySelector("#start").addEventListener("click", (e) => {
@@ -118,18 +119,32 @@ const submitQuiz = () => {
   let warningMsg = document.querySelector(".warning");
   warningMsg.innerHTML = "";
   if (allAnswered()) {
-    console.log(checkAnswers());
-    showResults(checkAnswers());
+    slidingTransition();
+    document.querySelector("header").scrollIntoView({ behavior: "smooth" });
   } else {
     warningMsg.innerText = "Du måste svara på alla frågor!";
   }
 };
 
+function slidingTransition() {
+  content.classList.add("move");
+  setTimeout(() => {
+    content.classList.remove("move");
+    content.classList.add("right");
+    content.classList.remove("quizContent");
+    showResults(checkAnswers());
+  }, 1000);
+  setTimeout(() => {
+    content.classList.add("resultContent");
+    content.classList.add("left");
+  }, 1750);
+}
+
 const constructQuiz = () => {
   questions.forEach((question, index) => {
     question.type === "trueOrFalse" || question.type === "multipleChoice"
-      ? quizContent.append(buildRadioQuestion(question, index))
-      : quizContent.append(buildCheckbox(question, index));
+      ? content.append(buildRadioQuestion(question, index))
+      : content.append(buildCheckbox(question, index));
   });
 
   let msg = document.createElement("span");
@@ -139,11 +154,13 @@ const constructQuiz = () => {
   submitBtn.setAttribute("id", "submitBtn");
   submitBtn.addEventListener("click", submitQuiz);
 
-  quizContent.append(msg, submitBtn);
+  content.classList.add("quizContent");
+  content.append(msg, submitBtn);
 };
 
 const buildRadioQuestion = (q, index) => {
   let div = document.createElement("div");
+  let innerDiv = document.createElement("div");
   div.dataset.id = index;
   div.classList.add("question");
   let text = document.createElement("span");
@@ -163,7 +180,8 @@ const buildRadioQuestion = (q, index) => {
     radioBtn.setAttribute("id", `${value}${index}`);
     radioBtn.setAttribute("name", `radio${index}`);
     aDiv.append(radioBtn, label);
-    div.append(aDiv);
+    innerDiv.append(aDiv);
+    div.append(innerDiv);
   }
 
   return div;
@@ -171,6 +189,7 @@ const buildRadioQuestion = (q, index) => {
 
 const buildCheckbox = (q, index) => {
   let div = document.createElement("div");
+  let innerDiv = document.createElement("div");
   div.dataset.id = index;
   div.classList.add("question");
   let text = document.createElement("span");
@@ -190,7 +209,8 @@ const buildCheckbox = (q, index) => {
     checkbox.setAttribute("id", `${value}${index}`);
     checkbox.setAttribute("name", `box${index}`);
     aDiv.append(checkbox, label);
-    div.append(aDiv);
+    innerDiv.append(aDiv);
+    div.append(innerDiv);
   }
 
   return div;
@@ -216,7 +236,7 @@ const checkAnswers = () => {
   let score = 0;
   let compiledAnswers = [];
 
-  let inputElements = document.querySelectorAll("#quizContent input");
+  let inputElements = document.querySelectorAll("#content input");
   questions.forEach((question) => {
     let inputs = [...inputElements].filter((input) => {
       if (questionMatchesAnswer(input, question)) {
@@ -269,15 +289,12 @@ const checkAnswers = () => {
 
 // check if answer and question belong together
 const questionMatchesAnswer = (input, question) => {
-  return (
-    +input.parentElement.parentElement.dataset.id ===
-    questions.indexOf(question)
-  );
+  return +input.closest(".question").dataset.id === questions.indexOf(question);
 };
 
 const showResults = (resultObj) => {
-  let resultDiv = document.querySelector("#resultContent");
-  resultDiv.innerHTML = "";
+  let scoreDiv = document.createElement("div");
+  content.innerHTML = "";
 
   resultObj.answers.forEach((result, index) => {
     let div = document.createElement("div");
@@ -288,21 +305,21 @@ const showResults = (resultObj) => {
     let answerDiv = document.createElement("div");
     let h4 = document.createElement("h4");
     let h5 = document.createElement("h5");
-    h5.innerText = "Du svarade:";
     let ul = document.createElement("ul");
     if (result.isCorrect) {
-      h4.innerText = "Rätt svar";
-      h4.classList.add("correctAnswer");
+      h5.innerText = "Korrekt!";
+      h5.classList.add("correctAnswer");
     } else {
-      h4.innerText = "Fel svar";
-      h4.classList.add("wrongAnswer");
+      h5.innerText = "Fel!";
+      h5.classList.add("wrongAnswer");
     }
 
-    if (typeof result.answer === "array") {
+    if (typeof result.answer === "object") {
       result.answer.forEach((answer) => {
         let li = document.createElement("li");
         li.innerText = answer;
         ul.append(li);
+        h4.innerText = "Du svarade:";
       });
     } else {
       let li = document.createElement("li");
@@ -310,7 +327,23 @@ const showResults = (resultObj) => {
       ul.append(li);
     }
 
-    answerDiv.append(h4, h5, ul);
-    resultDiv.append(h3, answerDiv);
+    answerDiv.append(h4, ul, h5);
+    content.append(h3, answerDiv);
   });
+
+  let yourPoints = document.createElement("span");
+  yourPoints.innerText = "Dina poäng";
+  let scoreSpan = document.createElement("span");
+  scoreSpan.classList.add("score");
+  scoreSpan.innerText = `${resultObj.score}/${questions.length}`;
+
+  let msg = document.createElement("span");
+  msg.classList.add("message");
+  resultObj.score < questions.length
+    ? (msg.innerText = "Försök igen!")
+    : (msg.innerText = "Bra jobbat!");
+
+  scoreDiv.append(yourPoints, scoreSpan, msg);
+
+  content.append(scoreDiv);
 };

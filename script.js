@@ -141,6 +141,9 @@ function slidingTransition() {
 }
 
 const constructQuiz = () => {
+  content.removeAttribute("class");
+  content.classList.add("quizContent");
+
   questions.forEach((question, index) => {
     question.type === "trueOrFalse" || question.type === "multipleChoice"
       ? content.append(buildRadioQuestion(question, index))
@@ -158,14 +161,20 @@ const constructQuiz = () => {
   content.append(msg, submitBtn);
 };
 
-const buildRadioQuestion = (q, index) => {
+const questionBase = (q, index) => {
   let div = document.createElement("div");
-  let innerDiv = document.createElement("div");
   div.dataset.id = index;
   div.classList.add("question");
   let text = document.createElement("span");
   text.innerText = q.q;
   div.append(text);
+
+  return div;
+};
+
+const buildRadioQuestion = (q, index) => {
+  let div = questionBase(q, index);
+  let innerDiv = document.createElement("div");
 
   for (i = 0; i < q.a.length; i++) {
     let aDiv = document.createElement("div");
@@ -188,13 +197,9 @@ const buildRadioQuestion = (q, index) => {
 };
 
 const buildCheckbox = (q, index) => {
-  let div = document.createElement("div");
+  let div = questionBase(q, index);
+
   let innerDiv = document.createElement("div");
-  div.dataset.id = index;
-  div.classList.add("question");
-  let text = document.createElement("span");
-  text.innerText = q.q;
-  div.append(text);
 
   for (i = 0; i < q.a.length; i++) {
     let aDiv = document.createElement("div");
@@ -296,6 +301,34 @@ const showResults = (resultObj) => {
   let scoreDiv = document.createElement("div");
   content.innerHTML = "";
 
+  let yourPoints = document.createElement("span");
+  yourPoints.innerText = "Dina poäng";
+  let scoreSpan = document.createElement("span");
+  scoreSpan.classList.add("score");
+  scoreSpan.innerText = `${resultObj.score}/${questions.length}`;
+
+  let msg = document.createElement("span");
+  msg.classList.add("message");
+  resultObj.score < questions.length
+    ? (msg.innerText = "Försök igen!")
+    : (msg.innerText = "Bra jobbat!");
+
+  scoreDiv.append(yourPoints, scoreSpan, msg);
+
+  content.append(scoreDiv);
+
+  colorScore(resultObj.score);
+
+  let btn = document.createElement("button");
+  btn.innerText = "Börja om";
+  btn.setAttribute("id", "restart");
+  btn.classList.add("restart");
+  btn.addEventListener("click", () => {
+    content.innerHTML = "";
+    constructQuiz();
+  });
+  content.append(btn);
+
   resultObj.answers.forEach((result, index) => {
     let div = document.createElement("div");
     div.classList.add("result");
@@ -303,6 +336,7 @@ const showResults = (resultObj) => {
     let h3 = document.createElement("h3");
     h3.innerText = `${index + 1}. ${question}`;
     let answerDiv = document.createElement("div");
+    answerDiv.classList.add("yourAnswer");
     let h4 = document.createElement("h4");
     let h5 = document.createElement("h5");
     let ul = document.createElement("ul");
@@ -330,20 +364,16 @@ const showResults = (resultObj) => {
     answerDiv.append(h4, ul, h5);
     content.append(h3, answerDiv);
   });
+};
 
-  let yourPoints = document.createElement("span");
-  yourPoints.innerText = "Dina poäng";
-  let scoreSpan = document.createElement("span");
-  scoreSpan.classList.add("score");
-  scoreSpan.innerText = `${resultObj.score}/${questions.length}`;
+const colorScore = (score) => {
+  let myScore = document.querySelector(".score");
 
-  let msg = document.createElement("span");
-  msg.classList.add("message");
-  resultObj.score < questions.length
-    ? (msg.innerText = "Försök igen!")
-    : (msg.innerText = "Bra jobbat!");
-
-  scoreDiv.append(yourPoints, scoreSpan, msg);
-
-  content.append(scoreDiv);
+  if (score / questions.length < 0.5) {
+    myScore.classList.add("red");
+  } else if (score / questions.length > 0.75) {
+    myScore.classList.add("green");
+  } else {
+    myScore.classList.add("yellow");
+  }
 };

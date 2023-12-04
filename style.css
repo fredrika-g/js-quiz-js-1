@@ -8,6 +8,7 @@ body {
   font-family: system-ui, sans-serif;
   font-size: 1.2rem;
   overflow-x: hidden;
+  background-color: hsl(45, 29%, 97%);
 }
 
 header {
@@ -28,18 +29,66 @@ ul {
   list-style: none;
 }
 
+button:not(.toggleMode) {
+  border: none;
+  outline: 2px solid #000;
+  border-radius: 100vw;
+  padding: 0.5em 0.7em;
+  background: lightgrey;
+  color: #000;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+button:not(.toggleMode):hover,
+button:not(.toggleMode):focus-visible {
+  transform: scale(1.025);
+}
+
+button:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 0.3rem;
+}
+.darkMode button:focus-visible {
+  outline: 2px solid #fff;
+}
+
+input:focus-visible {
+  outline: 1px solid #000;
+  outline-offset: 0.2rem;
+}
+.darkMode input:focus-visible {
+  outline: 1px solid #fff;
+}
+
 .flex {
   display: flex;
 }
 
 .darkMode * {
-  background-color: black;
-  color: white;
+  background-color: #232b2b;
+  color: #fff;
+}
+
+.toggleMode {
+  border: none;
+  border-radius: 100vw;
+  outline: 2px solid lightgrey;
+  background: slategray;
+  color: #fff;
+  padding: 0.3em 0.6em;
+  cursor: pointer;
+}
+
+.darkMode .toggleMode {
+  background: white;
+  color: #000;
 }
 
 .wrapper {
   display: flex;
   justify-content: center;
+  padding-bottom: 4rem;
 }
 
 .quizContent {
@@ -75,14 +124,53 @@ ul {
 .resultContent {
   display: flex;
   flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+}
+
+.resultContent div:first-child {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.score {
+  padding: 0.5rem 0.8rem;
+  border-radius: 0.4rem;
+}
+
+.green {
+  background-color: hsl(120, 100%, 25%);
+  color: #fff;
+}
+
+.red {
+  background-color: hsl(0, 100%, 50%);
+  color: #fff;
+}
+
+.yellow {
+  background-color: hsl(60, 100%, 50%);
+  color: #000;
+}
+
+.yourAnswer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .correctAnswer {
-  color: green;
+  color: hsl(120, 100%, 25%);
+}
+.darkMode .correctAnswer {
+  color: hsl(120, 60%, 44%);
 }
 
 .wrongAnswer {
-  color: red;
+  color: hsl(0, 100%, 50%);
 }
 
 .move {

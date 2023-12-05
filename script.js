@@ -133,11 +133,11 @@ function slidingTransition() {
     content.classList.add("right");
     content.classList.remove("quizContent");
     showResults(checkAnswers());
-  }, 1000);
+  }, 500);
   setTimeout(() => {
     content.classList.add("resultContent");
     content.classList.add("left");
-  }, 1750);
+  }, 1100);
 }
 
 const constructQuiz = () => {
@@ -305,7 +305,7 @@ const showResults = (resultObj) => {
   yourPoints.innerText = "Dina poäng";
   let scoreSpan = document.createElement("span");
   scoreSpan.classList.add("score");
-  scoreSpan.innerText = `${resultObj.score}/${questions.length}`;
+  scoreSpan.innerText = `${resultObj.score} / ${questions.length}`;
 
   let msg = document.createElement("span");
   msg.classList.add("message");

@@ -34,10 +34,15 @@ button:not(.toggleMode) {
   outline: 2px solid #000;
   border-radius: 100vw;
   padding: 0.5em 0.7em;
-  background: lightgrey;
-  color: #000;
+  background-color: #353839;
+  color: #fff;
   font-size: 1.2rem;
   cursor: pointer;
+}
+
+.darkMode button {
+  background-color: #fff;
+  color: #000;
 }
 
 button:not(.toggleMode):hover,
@@ -74,16 +79,16 @@ input:focus-visible {
   border: none;
   border-radius: 100vw;
   outline: 2px solid lightgrey;
-  background: slategray;
+  background: #353839;
   color: #fff;
   padding: 0.3em 0.6em;
   cursor: pointer;
 }
 
-.darkMode .toggleMode {
-  background: white;
+/* .darkMode .toggleMode {
+  background: #fff;
   color: #000;
-}
+} */
 
 .wrapper {
   display: flex;

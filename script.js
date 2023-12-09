@@ -1,22 +1,6 @@
 const questions = [
   {
-    q: "This is either true or false",
-    a: [
-      { text: "Sant", value: "Sant", isCorrect: true },
-      { text: "Falskt", value: "Falskt", isCorrect: false },
-    ],
-    type: "trueOrFalse",
-  },
-  {
-    q: "Second true/false question",
-    a: [
-      { text: "Sant", value: "Sant", isCorrect: true },
-      { text: "Falskt", value: "Falskt", isCorrect: false },
-    ],
-    type: "trueOrFalse",
-  },
-  {
-    q: "Third true/false question",
+    q: "Fyrkantiga rutor skurna ur en jättepizza kallas för pizzeta. Sant eller falskt?",
     a: [
       { text: "Sant", value: "Sant", isCorrect: false },
       { text: "Falskt", value: "Falskt", isCorrect: true },
@@ -24,7 +8,7 @@ const questions = [
     type: "trueOrFalse",
   },
   {
-    q: "Fourth true/false question",
+    q: "Den första permanenta hamburgerrestaurangen i Sverige hette Burger-Grill. Sant eller falskt?",
     a: [
       { text: "Sant", value: "Sant", isCorrect: true },
       { text: "Falskt", value: "Falskt", isCorrect: false },
@@ -32,62 +16,80 @@ const questions = [
     type: "trueOrFalse",
   },
   {
-    q: "Vad heter jag?",
+    q: "Världens äldsta tårta upptäcktes i en egyptisk grav från 4000 år sedan. Sant eller falskt?",
     a: [
-      { text: "Sara", value: "Sara", isCorrect: false },
-      { text: "Fredrika", value: "Fredrika", isCorrect: true },
-      { text: "Märta", value: "Märta", isCorrect: false },
-      { text: "Gabriella", value: "Gabriella", isCorrect: false },
+      { text: "Sant", value: "Sant", isCorrect: true },
+      { text: "Falskt", value: "Falskt", isCorrect: false },
+    ],
+    type: "trueOrFalse",
+  },
+  {
+    q: "När kom pizza först till Sverige?",
+    a: [
+      { text: "1945", value: "1945", isCorrect: false },
+      { text: "1947", value: "1947", isCorrect: true },
+      { text: "1952", value: "1952", isCorrect: false },
+      { text: "1960", value: "1960", isCorrect: false },
     ],
     type: "multipleChoice",
   },
   {
-    q: "Hur gammal är jag?",
+    q: "När började man pastörisera mjölk i Sverige?",
     a: [
-      { text: "25", value: "25", isCorrect: true },
-      { text: "23", value: "23", isCorrect: false },
-      { text: "24", value: "24", isCorrect: false },
-      { text: "27", value: "27", isCorrect: false },
+      { text: "1910-talet", value: "1910", isCorrect: false },
+      { text: "1920-talet", value: "1920", isCorrect: false },
+      { text: "1930-talet", value: "1930", isCorrect: true },
+      { text: "1940-talet", value: "1940", isCorrect: false },
     ],
     type: "multipleChoice",
   },
   {
-    q: "Svara rätt",
+    q: "Jamon Iberico är en exklusiv skinka. Vad äter griserna som gör skinkan unik?",
     a: [
-      { text: "Svar A", value: "A", isCorrect: false },
-      { text: "Svar B", value: "B", isCorrect: false },
-      { text: "Svar C", value: "C", isCorrect: true },
-      { text: "Svar D", value: "D", isCorrect: false },
+      { text: "Goliatmusseron", value: "Goliatmusseron", isCorrect: false },
+      { text: "Oliver", value: "Oliver", isCorrect: false },
+      { text: "Ekollon", value: "Ekollon", isCorrect: true },
+      { text: "Fikon", value: "Fikon", isCorrect: false },
     ],
     type: "multipleChoice",
   },
   {
-    q: "Vad heter jag i mellannamn? Två rätta svar",
+    q: "”Helan, halvan, tersen, kvarten…” Vilken är nästa i supordningen? (Från Helan går)",
     a: [
-      { text: "Elisabeth", value: "Elisabeth", isCorrect: false },
-      { text: "Helena", value: "Helena", isCorrect: true },
-      { text: "Kristina", value: "Kristina", isCorrect: true },
-      { text: "Ingrid", value: "Ingrid", isCorrect: false },
+      { text: "Räfflan", value: "Räfflan", isCorrect: false },
+      { text: "Kvinten", value: "Kvinten", isCorrect: true },
+      { text: "Rivan", value: "Rivan", isCorrect: false },
+      { text: "Septen", value: "Septen", isCorrect: false },
+    ],
+    type: "multipleChoice",
+  },
+  {
+    q: "Vilka av följande är Hemköps egna varumärken? Tre rätta svar",
+    a: [
+      { text: "Garant", value: "Garant", isCorrect: true },
+      { text: "El Dorado", value: "ElDorado", isCorrect: true },
+      { text: "Xtra", value: "Xtra", isCorrect: false },
+      { text: "Minstingen", value: "Minstingen", isCorrect: true },
     ],
     type: "checkbox",
   },
   {
-    q: "Fråga här? Tre rätta svar",
+    q: "Vilka av följande ostar är franska? Två rätta svar",
     a: [
-      { text: "Alt 1", value: "1", isCorrect: true },
-      { text: "Alt 2", value: "2", isCorrect: true },
-      { text: "Alt 3", value: "3", isCorrect: true },
-      { text: "Alt 4", value: "4", isCorrect: false },
+      { text: "Raclette", value: "Raclette", isCorrect: false },
+      { text: "Broccio", value: "Broccio", isCorrect: true },
+      { text: "Munster", value: "Munster", isCorrect: true },
+      { text: "Tete de Moine", value: "TeteDeMoine", isCorrect: false },
     ],
     type: "checkbox",
   },
   {
-    q: "En till fråga här? Två rätta svar",
+    q: "Böcklinglåda är en traditionell svensk rätt. Vilka av dessa ingredienser ingår? Två rätta svar",
     a: [
-      { text: "Alt 1", value: "1", isCorrect: false },
-      { text: "Alt 2", value: "2", isCorrect: true },
-      { text: "Alt 3", value: "3", isCorrect: false },
-      { text: "Alt 4", value: "4", isCorrect: true },
+      { text: "Ägg", value: "Ägg", isCorrect: false },
+      { text: "Persiljerot", value: "Persiljerot", isCorrect: false },
+      { text: "Purjolök", value: "Purjolök", isCorrect: true },
+      { text: "Dill", value: "Dill", isCorrect: true },
     ],
     type: "checkbox",
   },

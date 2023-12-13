@@ -1,3 +1,4 @@
+//questions data. important to specify type of question
 const questions = [
   {
     q: "Fyrkantiga rutor skurna ur en jättepizza kallas för pizzeta. Sant eller falskt?",
@@ -44,7 +45,7 @@ const questions = [
     type: "multipleChoice",
   },
   {
-    q: "Jamon Iberico är en exklusiv skinka. Vad äter griserna som gör skinkan unik?",
+    q: "Jamon Iberico är en exklusiv skinka. Vad äter grisarna som gör skinkan unik?",
     a: [
       { text: "Goliatmusseron", value: "Goliatmusseron", isCorrect: false },
       { text: "Oliver", value: "Oliver", isCorrect: false },
@@ -108,12 +109,11 @@ toggleBtn.addEventListener("click", () => {
 
 //start quiz
 let content = document.querySelector("#content");
-let resultDiv = document.querySelector("#resultContent");
 let warningMsg = document.querySelector(".warning");
 
 document.querySelector("#start").addEventListener("click", (e) => {
   constructQuiz();
-  e.target.remove();
+  e.target.remove(); //removes 'start' button
 });
 
 //submit quiz
@@ -121,6 +121,7 @@ const submitQuiz = () => {
   let warningMsg = document.querySelector(".warning");
   warningMsg.innerHTML = "";
   if (allAnswered()) {
+    //checks if all answered, if true proceed
     slidingTransition();
     document.querySelector("header").scrollIntoView({ behavior: "smooth" });
   } else {
@@ -128,6 +129,7 @@ const submitQuiz = () => {
   }
 };
 
+// visual transition between content + calling functions to check answers and show results
 function slidingTransition() {
   content.classList.add("move");
   setTimeout(() => {
@@ -139,13 +141,14 @@ function slidingTransition() {
   setTimeout(() => {
     content.classList.add("resultContent");
     content.classList.add("left");
-  }, 1100);
+  }, 1200);
 }
 
 const constructQuiz = () => {
   content.removeAttribute("class");
-  content.classList.add("quizContent");
+  content.classList.add("quizContent"); //apply quizContent class to get styling
 
+  //build questions based on question type
   questions.forEach((question, index) => {
     question.type === "trueOrFalse" || question.type === "multipleChoice"
       ? content.append(buildRadioQuestion(question, index))
@@ -159,10 +162,10 @@ const constructQuiz = () => {
   submitBtn.setAttribute("id", "submitBtn");
   submitBtn.addEventListener("click", submitQuiz);
 
-  content.classList.add("quizContent");
   content.append(msg, submitBtn);
 };
 
+//creating html in common for both question types, returns a div
 const questionBase = (q, index) => {
   let div = document.createElement("div");
   div.dataset.id = index;
@@ -174,6 +177,8 @@ const questionBase = (q, index) => {
   return div;
 };
 
+//function that takes a question and the index of the question as arguments, setting
+//content and attributes based on those values. Returns div with content
 const buildRadioQuestion = (q, index) => {
   let div = questionBase(q, index);
   let innerDiv = document.createElement("div");
@@ -198,6 +203,8 @@ const buildRadioQuestion = (q, index) => {
   return div;
 };
 
+//function that takes a question and the index of the question as arguments, setting
+//content and attributes based on those values. Returns div with content
 const buildCheckbox = (q, index) => {
   let div = questionBase(q, index);
 
@@ -223,8 +230,10 @@ const buildCheckbox = (q, index) => {
   return div;
 };
 
+//checking if all questions answered, returns true or false
 const allAnswered = () => {
-  let qDivs = [...document.querySelectorAll(".question")];
+  let qDivs = [...document.querySelectorAll(".question")]; //creating array from elements with class 'question'
+  //making array from every checked input
   let checked = qDivs.filter((q) => {
     let inputs = q.querySelectorAll("input");
     let a = 0;
@@ -236,41 +245,58 @@ const allAnswered = () => {
     return a > 0;
   });
 
+  //comparing length of checked array with length of questions array
   return checked.length >= questions.length;
 };
 
+//checking answers, returns a 'result object', containing an array of answers and the score
 const checkAnswers = () => {
   let score = 0;
+  //empty array that will contain 'answer objects'
   let compiledAnswers = [];
 
+  //getting every input (checkbox or radio button)
   let inputElements = document.querySelectorAll("#content input");
+
+  //iterating through each question
   questions.forEach((question) => {
+    //making an array containing each checked input that belongs to this particular question
     let inputs = [...inputElements].filter((input) => {
       if (questionMatchesAnswer(input, question)) {
         return input.checked;
       }
     });
 
+    //getting an array of the correct answers for this question
     let everyCorrect = question.a.filter((a) => {
       return a.isCorrect;
     });
 
     let isCorrect = false;
+    //array to hold wrong answers
     let allChecked = [];
+    // array to hold correct answers
     let answers = [];
 
+    //checking if number of chosen answers matches number of correct ones
     if (inputs.length === everyCorrect.length) {
+      //iterating through each answer
       for (i = 0; i < inputs.length; i++) {
+        //checking if input value matches correct value
         if (inputs[i].value === everyCorrect[i].value) {
           isCorrect = true;
           answers.push(everyCorrect[i].text);
         }
+        //pushing the answer to array
         allChecked.push(inputs[i].value);
       }
+      //checking if answer is correct and amount of checked matches no of correct answers
       if (isCorrect && answers.length === everyCorrect.length) {
-        score++;
+        score++; //increasing score by 1
+        // adding to the array that is to be returned by the whole function
         compiledAnswers.push({ answer: answers, isCorrect: true });
       } else {
+        //if answer is wrong
         let wrong = {};
         if (question.type === "checkbox") {
           wrong = {
@@ -284,6 +310,7 @@ const checkAnswers = () => {
         }
       }
     } else {
+      //if user chose less or more than the correct number of answers
       compiledAnswers.push({
         answer: `Du valde ${inputs.length} alternativ, det finns ${everyCorrect.length} korrekta svar!`,
         isCorrect: false,
@@ -291,14 +318,17 @@ const checkAnswers = () => {
     }
   });
 
+  //   returning an object with the compiled answers and the score
   return { answers: compiledAnswers, score: score };
 };
 
-// check if answer and question belong together
+// check if answer and question belong together, returns true or false
 const questionMatchesAnswer = (input, question) => {
+  // comparing the data attribute 'index' with the index of the question the questions array
   return +input.closest(".question").dataset.id === questions.indexOf(question);
 };
 
+// creating html using an object and its properties
 const showResults = (resultObj) => {
   let scoreDiv = document.createElement("div");
   content.innerHTML = "";
@@ -319,6 +349,7 @@ const showResults = (resultObj) => {
 
   content.append(scoreDiv);
 
+  // setting the color of the score
   colorScore(resultObj.score);
 
   let btn = document.createElement("button");
